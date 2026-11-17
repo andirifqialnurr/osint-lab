@@ -1,0 +1,60 @@
+name: Build & publish lab images
+
+# Jalan otomatis setiap ada push ke folder Dockerfile, atau manual dari tab "Actions".
+on:
+  push:
+    branches: [main]
+    paths:
+      - "spiderfoot/**"
+      - "recon-ng/**"
+      - ".github/workflows/build-images.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: [spiderfoot, recon-ng]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up QEMU (untuk build arm64)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login ke GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Nama image di ghcr.io wajib huruf kecil
+      - name: Siapkan nama image
+        id: meta
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Build & push (amd64 + arm64)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.tool }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ steps.meta.outputs.owner }}/osint-lab-${{ matrix.tool }}:latest
+            ghcr.io/${{ steps.meta.outputs.owner }}/osint-lab-${{ matrix.tool }}:${{ github.run_number }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.description=Lab OSINT (${{ matrix.tool }}) untuk kelas ethical hacking
+          cache-from: type=gha,scope=${{ matrix.tool }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.tool }}

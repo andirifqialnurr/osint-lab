@@ -1,0 +1,25 @@
+# Lab OSINT — SpiderFoot & Recon-ng
+# Ganti andirifqialnur dengan username GitHub pengajar (huruf kecil semua).
+
+services:
+  spiderfoot:
+    image: ghcr.io/andirifqialnur/osint-lab-spiderfoot:latest
+    container_name: spiderfoot
+    ports:
+      - "127.0.0.1:5001:5001"   # hanya bisa diakses dari laptop sendiri, bukan dari WiFi kelas
+    volumes:
+      - spiderfoot-data:/var/lib/spiderfoot   # hasil scan tetap ada walau container dihapus
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+  recon-ng:
+    image: ghcr.io/andirifqialnur/osint-lab-recon-ng:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - recon-ng-data:/root/.recon-ng   # modul, API key, dan workspace tersimpan di sini
+
+volumes:
+  spiderfoot-data:
+  recon-ng-data:
