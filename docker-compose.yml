@@ -3,7 +3,7 @@
 
 services:
   spiderfoot:
-    image: ghcr.io/andirifqialnur/osint-lab-spiderfoot:latest
+    image: ghcr.io/andirifqialnurr/osint-lab-spiderfoot:latest
     container_name: spiderfoot
     ports:
       - "127.0.0.1:5001:5001"   # hanya bisa diakses dari laptop sendiri, bukan dari WiFi kelas
@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
 
   recon-ng:
-    image: ghcr.io/andirifqialnur/osint-lab-recon-ng:latest
+    image: ghcr.io/andirifqialnurr/osint-lab-recon-ng:latest
     stdin_open: true
     tty: true
     volumes:

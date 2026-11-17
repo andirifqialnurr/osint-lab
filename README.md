@@ -30,7 +30,7 @@ Image tersedia untuk **amd64** (Windows/Linux/Mac Intel) dan **arm64** (Mac M1â€
    Bagian *Server* harus muncul tanpa error.
 3. Unduh repo ini, lewat tombol **Code â†’ Download ZIP** atau dengan:
    ```bash
-   git clone https://github.com/andirifqialnur/osint-lab.git
+   git clone https://github.com/andirifqialnurr/osint-lab.git
    cd osint-lab
    ```
 4. Unduh image-nya. Lakukan ini di rumah, karena WiFi kelas biasanya lambat:
